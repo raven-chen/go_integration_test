@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -14,21 +15,28 @@ type User struct {
 	Name string
 }
 
-type Product struct {
-	gorm.Model
-	Name        string
-	Description string
-}
+var (
+	DB gorm.DB
+)
 
 func main() {
-	DB, _ := gorm.Open("sqlite3", "demo.db")
-	DB.AutoMigrate(&User{}, &Product{})
+	Start(9000)
+}
+
+func AdminConfig() (mux *http.ServeMux) {
+	DB, _ = gorm.Open("sqlite3", "demo.db")
+	DB.AutoMigrate(&User{})
 
 	Admin := admin.New(&qor.Config{DB: &DB})
 	Admin.AddResource(&User{}, &admin.Config{Menu: []string{"User Management"}})
-	Admin.AddResource(&Product{}, &admin.Config{Menu: []string{"Product Management"}})
 
-	mux := http.NewServeMux()
+	mux = http.NewServeMux()
 	Admin.MountTo("/admin", mux)
-	http.ListenAndServe(":9000", mux)
+
+	return
+}
+
+func Start(port int) {
+	mux := AdminConfig()
+	http.ListenAndServe(fmt.Sprintf(":%v", port), mux)
 }
