@@ -12,7 +12,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Name string
+	Name   string
+	Gender string
 }
 
 var (
@@ -28,7 +29,8 @@ func AdminConfig() (mux *http.ServeMux) {
 	DB.AutoMigrate(&User{})
 
 	Admin := admin.New(&qor.Config{DB: &DB})
-	Admin.AddResource(&User{}, &admin.Config{Menu: []string{"User Management"}})
+	user := Admin.AddResource(&User{}, &admin.Config{Menu: []string{"User Management"}})
+	user.Meta(&admin.Meta{Name: "Gender", Type: "select_one", Collection: []string{"Male", "Female"}})
 
 	mux = http.NewServeMux()
 	Admin.MountTo("/admin", mux)

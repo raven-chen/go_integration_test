@@ -65,11 +65,19 @@ func TestCreateUser(t *testing.T) {
 
 	page.Find("#QorResourceName").Fill(userName) // fill in user name
 
+	// Select Gender
+	page.Find("#QorResourceGender_chosen").Click()
+	page.Find("#QorResourceGender_chosen .chosen-drop ul.chosen-results li[data-option-array-index='0']").Click()
+
 	page.FindByButton("Save").Click() // submit form
 
 	DB.Last(&user) // query the user we just created
 
 	if user.Name != userName { // assert it created as we expected
 		t.Error("user name not set")
+	}
+
+	if user.Gender != "Male" {
+		t.Error("user gender not set")
 	}
 }
