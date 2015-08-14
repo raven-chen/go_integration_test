@@ -30,7 +30,7 @@ func AdminConfig() (mux *http.ServeMux) {
 
 	Admin := admin.New(&qor.Config{DB: &DB})
 	user := Admin.AddResource(&User{}, &admin.Config{Menu: []string{"User Management"}})
-	user.Meta(&admin.Meta{Name: "Gender", Type: "select_one", Collection: []string{"Male", "Female"}})
+	user.Meta(&admin.Meta{Name: "Gender", Type: "select_one", Collection: []string{"自有设备", "消耗品", "客户设备"}})
 
 	mux = http.NewServeMux()
 	Admin.MountTo("/admin", mux)

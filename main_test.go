@@ -53,23 +53,23 @@ func StopDriverOnPanic() {
 }
 
 func TestEnv(t *testing.T) {
-	Expect(page.Navigate(fmt.Sprintf("%v/user", baseUrl))).To(Succeed())
+	Expect(page.Navigate(fmt.Sprintf("%v/users", baseUrl))).To(Succeed())
 }
 
 func TestCreateUser(t *testing.T) {
 	var user User
 	userName := "user name"
 
-	Expect(page.Navigate(fmt.Sprintf("%v/user", baseUrl))).To(Succeed()) // visit user page
-	Expect(page.Find("#plus").Click()).To(Succeed())                     // click add user button
+	Expect(page.Navigate(fmt.Sprintf("%v/users", baseUrl))).To(Succeed()) // visit user page
+	Expect(page.Find(".qor-button--new").Click()).To(Succeed())           // click add user button
 
-	page.Find("#QorResourceName").Fill(userName) // fill in user name
+	page.Find("input[name='QorResource.Name']").Fill(userName) // fill in user name
 
 	// Select Gender
-	page.Find("#QorResourceGender_chosen").Click()
-	page.Find("#QorResourceGender_chosen .chosen-drop ul.chosen-results li[data-option-array-index='0']").Click()
+	page.Find("#User_0_Gender_chosen").Click()
+	page.Find("#User_0_Gender_chosen .chosen-drop ul.chosen-results li[data-option-array-index='0']").Click()
 
-	page.FindByButton("Save").Click() // submit form
+	page.FindByButton("Add User").Click() // submit form
 
 	DB.Last(&user) // query the user we just created
 
